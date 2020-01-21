@@ -1,5 +1,8 @@
 # Redundancy Protocol for a Player who have Potato internet
 
+![](https://img.shields.io/github/languages/top/dotcom/RPPP?style=flat-square)
+![](https://img.shields.io/github/workflow/status/dotcom/rppp/run_test?style=flat-square)
+
 RPPP is a header-only library.  
 This protocol greatly reduces the packet loss rate. It is especially effective in environments with low packet loss rates (almost all networks). 
 
@@ -30,10 +33,10 @@ r = Probability of not losing one packet (= 1 - loss rate)
 s = Number of packets to send
 ```
 
-Probability that one or more packets will be lost when s packets(arrive correctly probability = r) are transmitted.
-And, 2 redundancy packets are generated per n packets.
+Probability that one or more packets will be lost when `s` packets(arrive correctly probability = `r`) are transmitted.
+And, 2 redundancy packets are generated per `n` packets.
 
-![](doc/COdeCogsEqn.png)
+![](doc/CodeCogsEqn.png)
 
 ### Probability Curve
 Consider the case where redundancy is applied to 10 packets.

@@ -47,7 +47,8 @@ protected:
     };
 
     template<typename T, int parity_size>
-    void encode_simple_test(){
+    struct encode_simple_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         EncodeBuffer<T, parity_size> e_buf;
 
@@ -64,11 +65,12 @@ protected:
 
         // non-parity data test
         EXPECT_EQ(memcmp(&in, &pipe.data, sizeof(in)), 0);
-
     }
+    };
 
     template<typename T, int parity_size>
-    void encode_logic_test(){
+    struct encode_logic_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         auto bytes = ((sizeof(T)+(parity_size-1))/parity_size)*parity_size;
         EncodeBuffer<T, parity_size> e_buf;
@@ -124,9 +126,11 @@ protected:
             }
         }
     }
+    };
 
     template<typename T, int parity_size>
-    void decode_simple_test(){
+    struct decode_simple_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         DecodeBuffer<T, parity_size> d_buf;
         StreamData<T, parity_size> in;
@@ -143,9 +147,11 @@ protected:
 
         EXPECT_EQ(memcmp(in.data, &out, sizeof(T)), 0);
     }
+    };
 
     template<typename T, int parity_size>
-    void decode_non_drop_test(){
+    struct decode_non_drop_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         DecodeBuffer<T, parity_size> d_buf;
 
@@ -180,9 +186,11 @@ protected:
         for (int i=0; i<parity_size; i++)
             EXPECT_EQ(memcmp(in[i].data, &out[i], sizeof(T)), 0);
     }
+    };
 
     template<typename T, int parity_size>
-    void drop_test(){
+    struct drop_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         EncodeBuffer<T, parity_size> e_buf;
         DecodeBuffer<T, parity_size> d_buf;
@@ -264,9 +272,11 @@ protected:
         }
         
     }
+    };
 
     template<typename T, int parity_size>
-    void encode_boundary_seq_id_test(){
+    struct encode_boundary_seq_id_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         EncodeBuffer<T, parity_size> e_buf;
         T in {};
@@ -285,9 +295,11 @@ protected:
             prev_seq_id = pipe.header.seq_id;
         }
     }
+    };
 
     template<typename T, int parity_size>
-    void decode_boundary_seq_id_test(){
+    struct decode_boundary_seq_id_test{
+    void operator()(){
         std::cout << typeid(T).name() << " " << parity_size << std::endl;
         DecodeBuffer<T, parity_size> d_buf;
         StreamData<T, parity_size> pipe {};
@@ -333,121 +345,54 @@ protected:
             pipe.header.seq_id = 0;
             d_buf.enq(pipe);
             EXPECT_EQ(d_buf.count(), i+1);
-        }
-        
+        }   
+    }
+    };
+
+    template<template<typename T, int parity_size> typename test_func>
+    void tester(){
+        test_func<NetVar0, 2>()();
+        test_func<NetVar0, 4>()();
+        test_func<NetVar0, 6>()();
+        test_func<NetVar0, 10>()();
+        test_func<NetVar0, 12>()();
+        test_func<NetVar0, 16>()();
+
+        test_func<NetVar1, 2>()();
+        test_func<NetVar1, 4>()();
+        test_func<NetVar1, 6>()();
+        test_func<NetVar1, 10>()();
+        test_func<NetVar1, 12>()();
+        test_func<NetVar1, 16>()();
     }
 };
 
 TEST_F(RPPPTest, encode_simple_test){
-    encode_simple_test<NetVar0, 2>();
-    encode_simple_test<NetVar0, 4>();
-    encode_simple_test<NetVar0, 6>();
-    encode_simple_test<NetVar0, 10>();
-    encode_simple_test<NetVar0, 12>();
-    encode_simple_test<NetVar0, 16>();
-
-    encode_simple_test<NetVar1, 2>();
-    encode_simple_test<NetVar1, 4>();
-    encode_simple_test<NetVar1, 6>();
-    encode_simple_test<NetVar1, 10>();
-    encode_simple_test<NetVar1, 12>();
-    encode_simple_test<NetVar1, 16>();
+    tester<encode_simple_test>();
 }
 
-TEST_F(RPPPTest, encode_logic_test) {
-    encode_logic_test<NetVar0, 2>();
-    encode_logic_test<NetVar0, 4>();
-    encode_logic_test<NetVar0, 6>();
-    encode_logic_test<NetVar0, 10>();
-    encode_logic_test<NetVar0, 12>();
-    encode_logic_test<NetVar0, 16>();
-
-    encode_logic_test<NetVar1, 2>();
-    encode_logic_test<NetVar1, 4>();
-    encode_logic_test<NetVar1, 6>();
-    encode_logic_test<NetVar1, 10>();
-    encode_logic_test<NetVar1, 12>();
-    encode_logic_test<NetVar1, 16>();
+TEST_F(RPPPTest, encode_logic_test){
+    tester<encode_logic_test>();
 }
 
 TEST_F(RPPPTest, decode_simple_test){
-    decode_simple_test<NetVar0, 2>();
-    decode_simple_test<NetVar0, 4>();
-    decode_simple_test<NetVar0, 6>();
-    decode_simple_test<NetVar0, 10>();
-    decode_simple_test<NetVar0, 12>();
-    decode_simple_test<NetVar0, 16>();
-
-    decode_simple_test<NetVar1, 2>();
-    decode_simple_test<NetVar1, 4>();
-    decode_simple_test<NetVar1, 6>();
-    decode_simple_test<NetVar1, 10>();
-    decode_simple_test<NetVar1, 12>();
-    decode_simple_test<NetVar1, 16>();
+    tester<decode_simple_test>();
 }
 
-TEST_F(RPPPTest, decode_non_drop_test) {
-    decode_non_drop_test<NetVar0, 2>();
-    decode_non_drop_test<NetVar0, 4>();
-    decode_non_drop_test<NetVar0, 6>();
-    decode_non_drop_test<NetVar0, 10>();
-    decode_non_drop_test<NetVar0, 12>();
-    decode_non_drop_test<NetVar0, 16>();
-
-    decode_non_drop_test<NetVar1, 2>();
-    decode_non_drop_test<NetVar1, 4>();
-    decode_non_drop_test<NetVar1, 6>();
-    decode_non_drop_test<NetVar1, 10>();
-    decode_non_drop_test<NetVar1, 12>();
-    decode_non_drop_test<NetVar1, 16>();
+TEST_F(RPPPTest, decode_non_drop_test){
+    tester<decode_non_drop_test>();
 }
 
 TEST_F(RPPPTest, drop_restoration_test) {
-    drop_test<NetVar0, 2>();
-    drop_test<NetVar0, 4>();
-    drop_test<NetVar0, 6>();
-    drop_test<NetVar0, 10>();
-    drop_test<NetVar0, 12>();
-    drop_test<NetVar0, 16>();
-
-    drop_test<NetVar1, 2>();
-    drop_test<NetVar1, 4>();
-    drop_test<NetVar1, 6>();
-    drop_test<NetVar1, 10>();
-    drop_test<NetVar1, 12>();
-    drop_test<NetVar1, 16>();
+    tester<drop_test>();
 }
 
 TEST_F(RPPPTest, encode_boundary_seq_id_test) {
-    encode_boundary_seq_id_test<NetVar0, 2>();
-    encode_boundary_seq_id_test<NetVar0, 4>();
-    encode_boundary_seq_id_test<NetVar0, 6>();
-    encode_boundary_seq_id_test<NetVar0, 10>();
-    encode_boundary_seq_id_test<NetVar0, 12>();
-    encode_boundary_seq_id_test<NetVar0, 16>();
-
-    encode_boundary_seq_id_test<NetVar1, 2>();
-    encode_boundary_seq_id_test<NetVar1, 4>();
-    encode_boundary_seq_id_test<NetVar1, 6>();
-    encode_boundary_seq_id_test<NetVar1, 10>();
-    encode_boundary_seq_id_test<NetVar1, 12>();
-    encode_boundary_seq_id_test<NetVar1, 16>();
+    tester<encode_boundary_seq_id_test>();
 }
 
 TEST_F(RPPPTest, decode_boundary_seq_id_test) {
-    decode_boundary_seq_id_test<NetVar0, 2>();
-    decode_boundary_seq_id_test<NetVar0, 4>();
-    decode_boundary_seq_id_test<NetVar0, 6>();
-    decode_boundary_seq_id_test<NetVar0, 10>();
-    decode_boundary_seq_id_test<NetVar0, 12>();
-    decode_boundary_seq_id_test<NetVar0, 16>();
-
-    decode_boundary_seq_id_test<NetVar1, 2>();
-    decode_boundary_seq_id_test<NetVar1, 4>();
-    decode_boundary_seq_id_test<NetVar1, 6>();
-    decode_boundary_seq_id_test<NetVar1, 10>();
-    decode_boundary_seq_id_test<NetVar1, 12>();
-    decode_boundary_seq_id_test<NetVar1, 16>();
+    tester<decode_boundary_seq_id_test>();
 }
 
 TEST_F(RPPPTest, buf_reset_test){

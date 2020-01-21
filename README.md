@@ -123,4 +123,16 @@ struct SampleNetVar{
 void update(SampleNetVar &s){
     // some code for update a var.
 }
+
+void use(SampleNetVar &s){
+    // some code for use a var.
+}
+
+void send(const void *data, size_t size){
+    // some code for send.
+}
+
+void receive(const void *data, size_t size){
+    // some code for receive.
+}
 ```

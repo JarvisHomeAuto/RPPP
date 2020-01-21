@@ -51,3 +51,6 @@ lib/*
 bin/*
 
 .vscode
+.devcontainer
+Dockerfile
+docker-compose.yml

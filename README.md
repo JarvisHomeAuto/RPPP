@@ -1,18 +1,16 @@
-# Redundancy Protocol for a Player who have Potato internet
+# Redundancy Protocol for Players who have Potato internet
 
 ![](https://img.shields.io/github/languages/top/dotcom/RPPP?style=flat-square)
 ![](https://img.shields.io/github/workflow/status/dotcom/rppp/run_test?style=flat-square)
 
 RPPP is a header-only library.  
-This protocol greatly reduces the packet loss rate. It is especially effective in environments with low packet loss rates (almost all networks). 
-
-This is especially useful for networks with high retransmission costs and for sequential applications where processing is blocked by loss.
+This protocol greatly reduces the packet loss rate. It is especially useful for networks with high retransmission costs and for sequential applications where processing is blocked by loss. 
 
 ### Data
 If you use retransmission, can replace this
-**Loss Occurrence Probability = Retransmission Occurrence Probability**
+**Probability of a loss occurring = Probability of a retransmission occurring**
 
-| Loss Probability /1data | Parity Length | Bandwidth Efficiency | | (Not use)Loss Occurrence Probability /100data | (RPPP)Loss Occurrence Probability /100data |
+| Loss Probability /1data | Parity Length | Bandwidth Efficiency | | (Not use)Probability of a loss occurring /100data | (RPPP)Probability of a loss occurring /100data |
 -|-|-|-|-|-
 | 0.1% good   | 100 | 98% || 10%    | **0.016%**
 | 0.2%        | 50  | 96% || 18%    | **0.032%**
@@ -25,8 +23,10 @@ If you use retransmission, can replace this
 | 5.0%        | 4   | 67% || 99%    | **5.4%**
 | 8.0% so bad | 2   | 50% || 99.98% | **9.2%**
 
-※Parity Length indicates how many packets redundant packets (2 packets) are added to. If you set 100, what is actually transmitted is 102 packets.  
+※Parity Length indicates how many packets redundant packets (2 packets) are added to. If you set 100, what is actually transmitted is 102 packets. 
 
+100 data = 100 packets (No redundancy)  
+100 data = 100 packets + parity packets.
 ```
 n = Parity size (include parity packet)
 r = Probability of not losing one packet (= 1 - loss rate)
@@ -36,23 +36,23 @@ s = Number of packets to send
 Probability that one or more packets will be lost when `s` packets(arrive correctly probability = `r`) are transmitted.
 And, 2 redundancy packets are generated per `n` packets.
 
-![](doc/CodeCogsEqn.png)
+![](doc/eqn.png)
 
 ### Probability Curve
 Consider the case where redundancy is applied to 10 packets.
 
-x axis = one packet loss rate
-y axis = Loss Occurrence Probability
+x axis = probability of loss a packet  (0 ~ 10%)  
+y axis = Probability of a loss occurring (10 data)
 
-No redundancy |Simple parity|RPPP
--|-|-
-![](doc/curve.png)|![](doc/p_curve.png)|![](doc/q_curve.png)
+No redundancy |RPPP
+-|-
+![](doc/curve.png)|![](doc/q_curve.png)
 
 ### usage
 
 1. `RPPP.hpp` exists at `./include/RPPP.hppp`
 2. `#include "RPPP.hpp"`
-3. you can write nice code.
+3. you can write nice codes.
 
 ### example code
 

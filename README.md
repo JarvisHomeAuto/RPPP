@@ -8,7 +8,8 @@ This is especially useful for networks with high retransmission costs and for se
 ### Data
 If you use retransmission, can replace this
 **Loss Occurrence Probability = Retransmission Occurrence Probability**
-|Loss Probability /1data|Parity Length|Bandwidth Efficiency||(Not use)Loss Occurrence Probability /100data|(RPPP)Loss Occurrence Probability /100data|
+
+| Loss Probability /1data | Parity Length | Bandwidth Efficiency | | (Not use)Loss Occurrence Probability /100data | (RPPP)Loss Occurrence Probability /100data |
 -|-|-|-|-|-
 | 0.1% good   | 100 | 98% || 10%    | **0.016%**
 | 0.2%        | 50  | 96% || 18%    | **0.032%**

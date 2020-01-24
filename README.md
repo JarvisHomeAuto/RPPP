@@ -41,8 +41,8 @@ And, 2 redundancy packets are generated per `n` packets.
 ### Probability Curve
 Consider the case where redundancy is applied to 10 packets.
 
-x axis = probability of loss a packet  (0 ~ 10%)  
-y axis = Probability of a loss occurring (10 data)
+x axis = Probability of loss a packet  (0 ~ 10%)  
+y axis = Probability of a loss occurring (0 ~ 100%)
 
 No redundancy |RPPP
 -|-
